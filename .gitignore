@@ -1,0 +1,41 @@
+# Python bytecode and test caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# IDE and editor files
+.vscode/
+.idea/
+*.code-workspace
+*.swp
+*.swo
+*~
+
+# Logs and temporary files
+*.log
+logs/
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Local uploads, generated reports, and evaluation documents
+uploads/
+output/
+answer_grader_test_sheets/
+
+# OS-generated files
+.DS_Store
+Thumbs.db

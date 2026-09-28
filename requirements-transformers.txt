@@ -1,0 +1,2 @@
+# Optional local sentence-embedding backend; model weights are downloaded on first use.
+sentence-transformers>=3.0

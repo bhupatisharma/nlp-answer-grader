@@ -1,0 +1,20 @@
+Q1. What is Natural Language Processing?
+Model: Natural Language Processing is a field of artificial intelligence that enables computers to process, understand, and generate human language.
+
+Q2. What is a variable in programming?
+Model: A variable is a named memory location used to store a value that a program can read or change.
+
+Q3. Explain TF-IDF.
+Model: TF-IDF is a statistical measure that weighs a term by how often it appears in a document and how rare it is across a collection of documents.
+
+Q4. What is tokenization?
+Model: Tokenization splits text into smaller units called tokens, such as words or sentences.
+
+Q5. What is lemmatization?
+Model: Lemmatization reduces an inflected word to its dictionary base form, called a lemma, using linguistic context.
+
+Q6. What is cosine similarity used for in NLP?
+Model: Cosine similarity compares the angle between two vectors and is used to estimate how similar their directions, or represented meanings, are.
+
+Q7. What is overfitting in machine learning?
+Model: Overfitting occurs when a model learns training examples and noise too closely, so it performs poorly on unseen data.

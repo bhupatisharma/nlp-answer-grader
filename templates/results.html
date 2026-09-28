@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Grading results · AI Answer Sheet Grader{% endblock %}
+{% block content %}
+<div class="page-heading compact-heading results-heading"><div><p class="eyebrow">ASSESSMENT REPORT{% if workspace.finalized %} / FINALIZED{% endif %}</p><h1>{{ workspace.metadata.get('student_name') or 'Student results' }}</h1><p class="lede">{{ workspace.metadata.get('subject') or 'Answer sheet grading' }} · {{ workspace.graded_at }}</p></div><div class="export-actions"><a class="button button-light" href="{{ url_for('download_csv') }}" aria-label="Download CSV report">↓ CSV</a><a class="button button-primary" href="{{ url_for('download_pdf') }}" aria-label="Download PDF report">↓ PDF</a></div></div>
+<section class="score-summary" aria-label="Overall results">
+  <div class="score-total"><span>TOTAL SCORE</span><strong>{{ obtained|round(1) }}<small> / {{ maximum|round(1) }}</small></strong><div class="score-rule"><span style="width: {{ percentage }}%"></span></div></div>
+  <div class="score-metric"><span>PERCENTAGE</span><strong>{{ percentage|round(1) }}<small>%</small></strong></div>
+  <div class="score-metric"><span>QUESTIONS</span><strong>{{ results|length }}</strong></div>
+</section>
+{% if workspace.unmatched_student %}<aside class="warning-panel"><strong>Unmatched student responses</strong><span>These response numbers do not correspond to a model question. Check the source or re-upload the student sheet.</span><ul>{% for item in workspace.unmatched_student %}<li>Question {{ item.number }}: {{ item.answer|truncate(160) or 'No answer detected' }}</li>{% endfor %}</ul></aside>{% endif %}
+<form method="post" class="results-form">
+  <div class="section-heading"><div><p class="eyebrow">QUESTION-BY-QUESTION</p><h2>Grading analysis</h2></div><span class="rounding-note">Marks rounded to 0.5 · Editable before finalizing</span></div>
+  {% for item in results %}
+  <details class="result-card" {% if loop.first %}open{% endif %}>
+    <summary><span class="result-q">Q{{ item.number }} <span>{{ item.question or 'Question text not provided' }}</span></span><span class="result-score"><strong>{{ item.marks_obtained|round(1) }}</strong><small>/ {{ item.maximum_marks|round(1) }}</small><span class="chevron">⌄</span></span></summary>
+    {% if not item.matched %}<div class="inline-warning">No student response with question number {{ item.number }} was matched. Score is currently zero.</div>{% endif %}
+    <div class="result-body">
+      <div class="comparison-grid"><div class="answer-block"><span>MODEL ANSWER</span><p>{{ item.model_answer }}</p></div><div class="answer-block student-answer"><span>STUDENT ANSWER</span><p>{{ item.student_answer or 'No answer detected.' }}</p></div></div>
+      <div class="analysis-grid">
+        <div class="analysis-panel"><span>SEMANTIC SIMILARITY</span><strong>{{ (item.semantic_similarity * 100)|round|int }}%</strong><div class="mini-bar"><i style="width: {{ item.semantic_similarity * 100 }}%"></i></div></div>
+        <div class="analysis-panel"><span>TF-IDF SIMILARITY</span><strong>{{ (item.tfidf_similarity * 100)|round|int }}%</strong><div class="mini-bar"><i style="width: {{ item.tfidf_similarity * 100 }}%"></i></div></div>
+        <div class="analysis-panel"><span>CONCEPT COVERAGE</span><strong>{{ (item.concept_coverage * 100)|round|int }}%</strong><div class="mini-bar"><i style="width: {{ item.concept_coverage * 100 }}%"></i></div></div>
+        <div class="analysis-panel"><span>COMPLETENESS</span><strong>{{ (item.completeness * 100)|round|int }}%</strong><div class="mini-bar"><i style="width: {{ item.completeness * 100 }}%"></i></div></div>
+      </div>
+      <div class="concept-lists"><div><span class="list-label">COVERED CONCEPTS</span>{% if item.covered_concepts %}<div class="concept-chips">{% for concept in item.covered_concepts %}<span class="concept covered">{{ concept }}</span>{% endfor %}</div>{% else %}<p class="muted">None detected</p>{% endif %}</div><div><span class="list-label">MISSING / WEAK</span>{% if item.missing_concepts %}<div class="concept-chips">{% for concept in item.missing_concepts %}<span class="concept missing">{{ concept }}</span>{% endfor %}</div>{% else %}<p class="muted">None</p>{% endif %}</div></div>
+      <div class="feedback-line"><span>FEEDBACK</span><p>{{ item.feedback }}</p></div>
+      <label class="override-field">Teacher’s final mark<input type="number" name="marks_{{ item.number }}" min="0" max="{{ item.maximum_marks }}" step="0.5" value="{{ item.marks_obtained }}" required><small>Maximum {{ item.maximum_marks|round(1) }}</small></label>
+    </div>
+  </details>
+  {% endfor %}
+  <div class="finalize-row"><p>Automated grades are an estimate. Teacher review is recommended for borderline or ambiguous answers.</p><button class="button button-primary" type="submit">Save final marks <span>→</span></button></div>
+</form>
+{% endblock %}

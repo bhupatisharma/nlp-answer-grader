@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Upload student answers · AI Answer Sheet Grader{% endblock %}
+{% block content %}
+<div class="page-heading compact-heading"><div><p class="eyebrow">STEP 02 / RESPONSE</p><h1>Upload student answers</h1><p class="lede">The response number is matched to the same question number in the confirmed model sheet.</p></div><a class="back-link" href="{{ url_for('model_review') }}">← Model answers</a></div>
+<form class="upload-panel" method="post" enctype="multipart/form-data">
+  <label class="drop-zone" for="student-file"><span class="upload-symbol" aria-hidden="true">↑</span><strong>Choose a student answer sheet</strong><span>PDF, DOCX, or TXT · Maximum 12 MB</span><input id="student-file" name="document" type="file" accept=".pdf,.docx,.txt" required></label>
+  <div class="format-hint"><strong>Response association</strong><span>Use numbered headings such as Q1., Question 1:, or 1.</span><span>Check the extracted numbers and answers on the next screen.</span><span>Missing or unmatched responses are flagged for manual review.</span></div>
+  <button class="button button-primary" type="submit">Extract student responses <span>→</span></button>
+</form>
+{% endblock %}

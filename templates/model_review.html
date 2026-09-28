@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Review model answers · AI Answer Sheet Grader{% endblock %}
+{% block content %}
+<div class="page-heading compact-heading"><div><p class="eyebrow">STEP 01 / VERIFY</p><h1>Review model answers</h1><p class="lede">Correct the extraction, set marks, or add a missing question. Blank model answers cannot be confirmed.</p></div><a class="back-link" href="{{ url_for('upload_model') }}">← Replace document</a></div>
+<form method="post" class="review-form" data-review-form="model">
+  <div id="model-records" class="record-list">
+    {% for record in records %}
+    <article class="record-card" data-record-card>
+      <div class="record-top"><span class="record-number">QUESTION <span data-visible-number>{{ record.number }}</span></span><button type="button" class="icon-button delete-record" aria-label="Delete question" title="Delete question">×</button></div>
+      <input type="hidden" name="model_number" value="{{ record.number }}" data-number-input>
+      <label>Question<textarea name="model_question" rows="2">{{ record.question }}</textarea></label>
+      <label>Model answer<textarea name="model_answer" rows="4" required>{{ record.answer }}</textarea></label>
+      <label class="marks-field">Maximum marks<input name="model_marks" type="number" min="0" step="0.5" value="{{ record.maximum_marks|default(5) }}" required></label>
+    </article>
+    {% endfor %}
+  </div>
+  <div class="review-actions"><button type="button" class="button button-light" data-add-record="model">＋ Add question</button><button class="button button-primary" type="submit">Confirm model answers <span>→</span></button></div>
+</form>
+<template id="model-record-template"><article class="record-card" data-record-card>
+  <div class="record-top"><span class="record-number">QUESTION <span data-visible-number></span></span><button type="button" class="icon-button delete-record" aria-label="Delete question" title="Delete question">×</button></div>
+  <input type="hidden" name="model_number" data-number-input>
+  <label>Question<textarea name="model_question" rows="2" placeholder="Enter the question"></textarea></label>
+  <label>Model answer<textarea name="model_answer" rows="4" placeholder="Enter the ideal answer" required></textarea></label>
+  <label class="marks-field">Maximum marks<input name="model_marks" type="number" min="0" step="0.5" value="5" required></label>
+</article></template>
+{% endblock %}

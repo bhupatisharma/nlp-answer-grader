@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Review student responses · AI Answer Sheet Grader{% endblock %}
+{% block content %}
+<div class="page-heading compact-heading"><div><p class="eyebrow">STEP 02 / VERIFY</p><h1>Review student responses</h1><p class="lede">Check question numbers and extracted responses. An empty response stays empty and receives zero until corrected.</p></div><a class="back-link" href="{{ url_for('upload_student') }}">← Replace document</a></div>
+<form method="post" class="review-form" data-review-form="student">
+  <div id="student-records" class="record-list">
+    {% for record in records %}
+    <article class="record-card student-record" data-record-card>
+      <div class="record-top"><span class="record-number">STUDENT RESPONSE</span><button type="button" class="icon-button delete-record" aria-label="Delete response" title="Delete response">×</button></div>
+      <label class="marks-field">Question number<input type="number" min="1" name="student_number" value="{{ record.number }}" data-number-input required></label>
+      <label>Question / reference (optional)<textarea name="student_question" rows="2">{{ record.question }}</textarea></label>
+      <label>Student answer<textarea name="student_answer" rows="4" placeholder="Leave blank if no answer was provided">{{ record.answer }}</textarea></label>
+    </article>
+    {% endfor %}
+  </div>
+  <div class="review-actions"><button type="button" class="button button-light" data-add-record="student">＋ Add response</button><button class="button button-primary" type="submit">Grade answers <span>→</span></button></div>
+</form>
+<template id="student-record-template"><article class="record-card student-record" data-record-card>
+  <div class="record-top"><span class="record-number">STUDENT RESPONSE</span><button type="button" class="icon-button delete-record" aria-label="Delete response" title="Delete response">×</button></div>
+  <label class="marks-field">Question number<input type="number" min="1" name="student_number" data-number-input required></label>
+  <label>Question / reference (optional)<textarea name="student_question" rows="2" placeholder="Optional"></textarea></label>
+  <label>Student answer<textarea name="student_answer" rows="4" placeholder="Leave blank if no answer was provided"></textarea></label>
+</article></template>
+{% endblock %}
