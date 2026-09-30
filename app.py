@@ -96,16 +96,20 @@ def upload_model():
             records = parse_answer_sheet(extract_text(path))
             if not records:
                 raise ValueError("No numbered questions were detected. Use Q1., Question 1:, or 1. headings, then add records manually after parsing.")
+            workspace = _workspace()
+            metadata = workspace.setdefault("metadata", {})
+            for field in ("student_name", "subject"):
+                if field in request.form:
+                    metadata[field] = request.form.get(field, "").strip()
             for record in records:
                 record["maximum_marks"] = 5.0
-            workspace = _workspace()
             workspace["model"] = records
             workspace["model_filename"] = request.files["document"].filename
             flash(f"Detected {len(records)} question(s). Review the extracted text before confirming.", "success")
             return redirect(url_for("model_review"))
         except (ValueError, DocumentParseError) as error:
             flash(str(error), "error")
-    return render_template("upload_model.html")
+    return render_template("upload_model.html", workspace=_workspace())
 
 
 @app.route("/model-review", methods=["GET", "POST"])

@@ -2,6 +2,7 @@ import io
 from pathlib import Path
 
 import pytest
+from pypdf import PdfReader
 
 from app import WORKSPACES, app
 from nlp.grading_engine import GradingEngine
@@ -103,6 +104,7 @@ def test_full_upload_grade_override_and_export_workflow():
     app.config.update(TESTING=True, SECRET_KEY="test-key")
     client = app.test_client()
     response = client.post("/upload-model", data={
+        "student_name": "Asha Kumar", "subject": "Introduction to NLP",
         "document": (io.BytesIO(b"Q1. What is tokenization?\nModel: Tokenization splits text into tokens."), "model.txt"),
     }, content_type="multipart/form-data", follow_redirects=True)
     assert response.status_code == 200
@@ -129,6 +131,9 @@ def test_full_upload_grade_override_and_export_workflow():
     pdf_response = client.get("/report.pdf")
     assert pdf_response.status_code == 200
     assert pdf_response.data.startswith(b"%PDF")
+    pdf_text = " ".join(page.extract_text() or "" for page in PdfReader(io.BytesIO(pdf_response.data)).pages)
+    assert "Asha Kumar" in pdf_text
+    assert "Introduction to NLP" in pdf_text
     workspace_id = client.get_cookie("session")
     assert workspace_id is not None
     WORKSPACES.clear()

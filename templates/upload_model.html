@@ -3,6 +3,10 @@
 {% block content %}
 <div class="page-heading compact-heading"><div><p class="eyebrow">STEP 01 / REFERENCE</p><h1>Upload model answers</h1><p class="lede">Choose the teacher’s question and answer document. You can verify every extracted field before grading.</p></div><a class="back-link" href="{{ url_for('index') }}">← Dashboard</a></div>
 <form class="upload-panel" method="post" enctype="multipart/form-data">
+  <div class="metadata-bar">
+    <label>Student name<input name="student_name" value="{{ workspace.metadata.get('student_name', '') }}" placeholder="e.g. Asha Kumar"></label>
+    <label>Subject / exam<input name="subject" value="{{ workspace.metadata.get('subject', '') }}" placeholder="e.g. Introduction to NLP"></label>
+  </div>
   <label class="drop-zone" for="model-file"><span class="upload-symbol" aria-hidden="true">↑</span><strong>Choose a model answer sheet</strong><span>PDF, DOCX, or TXT · Maximum 12 MB</span><input id="model-file" name="document" type="file" accept=".pdf,.docx,.txt" required></label>
   <div class="format-hint"><strong>Recognized layouts</strong><span>Q1. Question text followed by Answer: or Model:</span><span>1. Question text on one line, with its answer below</span><span>Question 1: … followed by Answer 1: …</span></div>
   <button class="button button-primary" type="submit">Extract and review <span>→</span></button>
